@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Formulaire d'inscription avec validation HTML5">
+  <title>TP2 — Formulaire d'inscription · im_hadi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #f8f5ff;
+      --white:        #ffffff;
+      --ink:          #1a1030;
+      --purple:       #7c3aed;
+      --purple-light: #f0ebff;
+      --rose:         #e11d77;
+      --rose-light:   #fff0f7;
+      --green:        #059669;
+      --green-light:  #ecfdf5;
+      --red:          #dc2626;
+      --red-light:    #fef2f2;
+      --muted:        #6b6480;
+      --border:       #ddd6f3;
+      --radius:       8px;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 2.5rem 1rem;
+    }
+
+    /* ===== HEADER ===== */
+    .page-header {
+      max-width: 760px;
+      margin: 0 auto 2rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.83rem;
+      margin-bottom: 1.5rem;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--purple); }
+
+    .page-header h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .page-header h1 span { color: var(--purple); }
+
+    .page-header p { color: var(--muted); font-size: 0.88rem; }
+
+    /* ===== CARD ===== */
+    .form-card {
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(124,58,237,0.06);
+    }
+
+    /* ===== FIELDSET ===== */
+    fieldset {
+      border: none;
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+    }
+
+    fieldset:first-of-type { border-top: none; }
+
+    legend {
+      display: block;
+      width: 100%;
+      padding: 0 0 1.5rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--purple);
+    }
+
+    /* ===== LAYOUT ===== */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-row.single { grid-template-columns: 1fr; }
+
+    /* ===== FIELD ===== */
+    .field { display: flex; flex-direction: column; gap: 0.35rem; }
+
+    label { font-size: 0.82rem; font-weight: 600; color: var(--ink); }
+
+    label .req { color: var(--rose); margin-left: 2px; }
+
+    .hint { font-size: 0.74rem; color: var(--muted); margin-top: -0.15rem; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="password"],
+    input[type="file"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.65rem 0.95rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--ink);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+    }
+
+    input:user-invalid,
+    select:user-invalid,
+    textarea:user-invalid {
+      border-color: var(--red);
+      background: var(--red-light);
+    }
+
+    input:user-invalid + .error-msg,
+    select:user-invalid + .error-msg,
+    textarea:user-invalid + .error-msg {
+      display: block;
+    }
+
+    .error-msg {
+      display: none;
+      font-size: 0.73rem;
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    /* ===== RADIO / CHECKBOX ===== */
+    .radio-group, .checkbox-group {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .radio-label, .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      font-size: 0.86rem;
+      padding: 0.45rem 0.95rem;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .radio-label:hover, .checkbox-label:hover {
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+
+    .radio-label:has(input:checked),
+    .checkbox-label:has(input:checked) {
+      border-color: var(--purple);
+      background: var(--purple-light);
+      color: var(--purple);
+      font-weight: 600;
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: auto;
+      accent-color: var(--purple);
+    }
+
+    /* ===== TEXTAREA ===== */
+    textarea { resize: vertical; min-height: 100px; }
+
+    /* ===== STRENGTH BAR ===== */
+    .strength-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      margin-top: 0.4rem;
+      overflow: hidden;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 4px;
+      background: var(--red);
+      transition: width 0.3s, background 0.3s;
+    }
+
+    .strength-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ===== CGU ===== */
+    .cgu-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .cgu-row input[type="checkbox"] { margin-top: 0.2rem; flex-shrink: 0; }
+
+    .cgu-row label { font-size: 0.85rem; color: var(--muted); font-weight: 400; cursor: pointer; }
+
+    .cgu-row label a { color: var(--purple); text-decoration: underline; }
+
+    /* ===== FOOTER ===== */
+    .form-footer {
+      padding: 2rem;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .form-footer p { font-size: 0.78rem; color: var(--muted); }
+
+    .btn-submit {
+      background: var(--purple);
+      color: var(--white);
+      border: none;
+      padding: 0.85rem 2.5rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover { background: #6d28d9; }
+
+    /* ===== SUCCESS ===== */
+    #success-msg {
+      display: none;
+      max-width: 760px;
+      margin: 2rem auto 0;
+      background: var(--green-light);
+      border: 1.5px solid var(--green);
+      border-radius: 10px;
+      padding: 1.5rem 2rem;
+      color: var(--green);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .form-footer { flex-direction: column; align-items: stretch; }
+      .btn-submit { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <a href="/" class="back-link">← Retour à l'accueil</a>
+    <h1>Formulaire d'<span>inscription</span></h1>
+    <p>TP2 · im_hadi · Validation HTML5 complète · Les champs <span style="color:var(--rose)">*</span> sont obligatoires</p>
+  </div>
+
+  <div class="form-card">
+    <form id="register-form" action="#" method="post" autocomplete="on" novalidate>
+
+      <!-- 01 INFOS PERSONNELLES -->
+      <fieldset>
+        <legend>01 — Informations personnelles</legend>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="nom">Nom <span class="req">*</span></label>
+            <input type="text" id="nom" name="nom" placeholder="Ex : HADI"
+              autocomplete="family-name" required minlength="2">
+            <span class="error-msg">Le nom est requis (2 caractères minimum)</span>
+          </div>
+          <div class="field">
+            <label for="prenom">Prénom <span class="req">*</span></label>
+            <input type="text" id="prenom" name="prenom" placeholder="Ex : Imane"
+              autocomplete="given-name" required minlength="2">
+            <span class="error-msg">Le prénom est requis (2 caractères minimum)</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="email">Adresse email <span class="req">*</span></label>
+            <input type="email" id="email" name="email" placeholder="imane@exemple.com"
+              autocomplete="email" required>
+            <span class="error-msg">Email invalide. Exemple : imane@exemple.com</span>
+          </div>
+          <div class="field">
+            <label for="telephone">Téléphone <span class="req">*</span></label>
+            <span class="hint">Format marocain : 06XXXXXXXX ou 07XXXXXXXX</span>
+            <input type="tel" id="telephone" name="telephone" placeholder="0612345678"
+              autocomplete="tel" pattern="^(06|07)[0-9]{8}$" required>
+            <span class="error-msg">Format invalide. Exemple : 0612345678</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="naissance">Date de naissance <span class="req">*</span></label>
+            <span class="hint">Vous devez avoir au moins 18 ans</span>
+            <input type="date" id="naissance" name="naissance"
+              autocomplete="bday" required>
+            <span class="error-msg" id="age-error">Vous devez avoir au moins 18 ans</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 02 GENRE -->
+      <fieldset>
+        <legend>02 — Genre</legend>
+        <div class="field">
+          <label>Genre <span class="req">*</span></label>
+          <div class="radio-group" role="radiogroup" aria-required="true">
+            <label class="radio-label">
+              <input type="radio" name="genre" value="femme" required>
+              <span>Femme</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="genre" value="homme">
+              <span>Homme</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="genre" value="autre">
+              <span>Autre / Non précisé</span>
+            </label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 03 LOCALISATION -->
+      <fieldset>
+        <legend>03 — Pays de résidence</legend>
+        <div class="form-row single">
+          <div class="field">
+            <label for="pays">Pays <span class="req">*</span></label>
+            <input type="text" id="pays" name="pays" list="pays-list"
+              placeholder="Sélectionner ou saisir un pays"
+              autocomplete="country-name" required>
+            <datalist id="pays-list">
+              <option value="Maroc">
+              <option value="France">
+              <option value="Belgique">
+              <option value="Canada">
+              <option value="Espagne">
+              <option value="Tunisie">
+              <option value="Algérie">
+              <option value="Sénégal">
+              <option value="Côte d'Ivoire">
+              <option value="États-Unis">
+            </datalist>
+            <span class="error-msg">Veuillez sélectionner votre pays</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 04 CENTRES D'INTÉRÊT -->
+      <fieldset>
+        <legend>04 — Centres d'intérêt</legend>
+        <div class="field">
+          <label>Domaines qui vous intéressent</label>
+          <div class="checkbox-group" role="group" aria-label="Centres d'intérêt">
+            <label class="checkbox-label"><input type="checkbox" name="interets" value="dev-web"><span>Développement Web</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="interets" value="ia"><span>Intelligence Artificielle</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="interets" value="mobile"><span>Mobile</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="interets" value="data"><span>Data Science</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="interets" value="design"><span>UI / UX Design</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="interets" value="cybersec"><span>Cybersécurité</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 05 MOT DE PASSE -->
+      <fieldset>
+        <legend>05 — Sécurité du compte</legend>
+        <div class="form-row">
+          <div class="field">
+            <label for="password">Mot de passe <span class="req">*</span></label>
+            <span class="hint">8 car. min · 1 majuscule · 1 chiffre</span>
+            <input type="password" id="password" name="password"
+              autocomplete="new-password"
+              pattern="^(?=.*[A-Z])(?=.*\d).{8,}$"
+              required placeholder="••••••••">
+            <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+            <span class="strength-label" id="strength-label">Saisissez un mot de passe</span>
+            <span class="error-msg">8 caractères min, 1 majuscule et 1 chiffre requis</span>
+          </div>
+          <div class="field">
+            <label for="password-confirm">Confirmation <span class="req">*</span></label>
+            <input type="password" id="password-confirm" name="password-confirm"
+              autocomplete="new-password" required placeholder="••••••••">
+            <span class="error-msg" id="confirm-error">Les mots de passe ne correspondent pas</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 06 PROFIL -->
+      <fieldset>
+        <legend>06 — Profil &amp; biographie</legend>
+
+        <div class="form-row single">
+          <div class="field">
+            <label for="photo">Photo de profil</label>
+            <span class="hint">JPG, PNG ou WebP · 5 Mo maximum</span>
+            <input type="file" id="photo" name="photo"
+              accept="image/jpeg,image/png,image/webp">
+          </div>
+        </div>
+
+        <div class="form-row single" style="margin-top:1.25rem;">
+          <div class="field">
+            <label for="biographie">Biographie</label>
+            <span class="hint">Présentez-vous en quelques mots (500 caractères max)</span>
+            <textarea id="biographie" name="biographie" maxlength="500"
+              placeholder="Ex : Étudiante passionnée par le développement web..."
+              autocomplete="off"></textarea>
+            <span class="hint" id="bio-counter" style="text-align:right;">0 / 500</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- 07 CGU -->
+      <fieldset>
+        <legend>07 — Conditions d'utilisation</legend>
+        <div class="cgu-row">
+          <input type="checkbox" id="cgu" name="cgu" required>
+          <label for="cgu">
+            J'ai lu et j'accepte les
+            <a href="#" target="_blank" rel="noopener">Conditions Générales d'Utilisation</a>
+            et la <a href="#" target="_blank" rel="noopener">Politique de confidentialité</a>.
+            <span class="req">*</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="form-footer">
+        <p>🔒 Vos données sont sécurisées et ne seront jamais partagées.</p>
+        <button type="submit" class="btn-submit">Créer mon compte →</button>
+      </div>
+
+    </form>
+  </div>
+
+  <div id="success-msg" role="alert">
+    ✅ Inscription réussie ! Bienvenue Imane. Vous allez recevoir un email de confirmation.
+  </div>
+
+  <script>
+    // Age min 18
+    const dobInput = document.getElementById('naissance');
+    const ageError = document.getElementById('age-error');
+    dobInput.addEventListener('change', () => {
+      const today = new Date();
+      const dob = new Date(dobInput.value);
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+      if (age < 18) {
+        dobInput.setCustomValidity('Vous devez avoir au moins 18 ans.');
+        ageError.style.display = 'block';
+      } else {
+        dobInput.setCustomValidity('');
+        ageError.style.display = 'none';
+      }
+    });
+
+    // Password strength
+    const pw = document.getElementById('password');
+    const fill = document.getElementById('strength-fill');
+    const lbl = document.getElementById('strength-label');
+    pw.addEventListener('input', () => {
+      const v = pw.value;
+      let s = 0;
+      if (v.length >= 8) s++;
+      if (/[A-Z]/.test(v)) s++;
+      if (/[0-9]/.test(v)) s++;
+      if (/[^A-Za-z0-9]/.test(v)) s++;
+      const widths  = ['0%','25%','50%','75%','100%'];
+      const colors  = ['transparent','#dc2626','#f59e0b','#7c3aed','#059669'];
+      const labels  = ['Saisissez un mot de passe','Très faible','Faible','Bon','Très fort'];
+      fill.style.width      = widths[s];
+      fill.style.background = colors[s];
+      lbl.textContent       = labels[s];
+    });
+
+    // Confirm
+    const pwc = document.getElementById('password-confirm');
+    const cerr = document.getElementById('confirm-error');
+    pwc.addEventListener('input', () => {
+      if (pwc.value !== pw.value) {
+        pwc.setCustomValidity('Les mots de passe ne correspondent pas.');
+        cerr.style.display = 'block';
+      } else {
+        pwc.setCustomValidity('');
+        cerr.style.display = 'none';
+      }
+    });
+
+    // Bio counter
+    const bio = document.getElementById('biographie');
+    const ctr = document.getElementById('bio-counter');
+    bio.addEventListener('input', () => { ctr.textContent = bio.value.length + ' / 500'; });
+
+    // Submit
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (this.checkValidity()) {
+        this.style.display = 'none';
+        document.getElementById('success-msg').style.display = 'block';
+      } else {
+        this.reportValidity();
+      }
+    });
+  </script>
+
+</body>
+</html>
